@@ -1,24 +1,24 @@
 {
   "files": {
-    "main.css": "/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/static/js/main.b122feee.chunk.js",
-    "main.js.map": "/static/js/main.b122feee.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.52f92c28.js",
-    "runtime-main.js.map": "/static/js/runtime-main.52f92c28.js.map",
-    "static/js/2.7ee5e3d3.chunk.js": "/static/js/2.7ee5e3d3.chunk.js",
-    "static/js/2.7ee5e3d3.chunk.js.map": "/static/js/2.7ee5e3d3.chunk.js.map",
-    "static/js/3.714a1757.chunk.js": "/static/js/3.714a1757.chunk.js",
-    "static/js/3.714a1757.chunk.js.map": "/static/js/3.714a1757.chunk.js.map",
-    "index.html": "/index.html",
-    "service-worker.js": "/service-worker.js",
-    "service-worker.js.map": "/service-worker.js.map",
-    "static/css/main.6dea0f05.chunk.css.map": "/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.7ee5e3d3.chunk.js.LICENSE.txt": "/static/js/2.7ee5e3d3.chunk.js.LICENSE.txt"
+    "main.css": "/react-triangles/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/react-triangles/static/js/main.ce1e13be.chunk.js",
+    "main.js.map": "/react-triangles/static/js/main.ce1e13be.chunk.js.map",
+    "runtime-main.js": "/react-triangles/static/js/runtime-main.93a92799.js",
+    "runtime-main.js.map": "/react-triangles/static/js/runtime-main.93a92799.js.map",
+    "static/js/2.e5037742.chunk.js": "/react-triangles/static/js/2.e5037742.chunk.js",
+    "static/js/2.e5037742.chunk.js.map": "/react-triangles/static/js/2.e5037742.chunk.js.map",
+    "static/js/3.714a1757.chunk.js": "/react-triangles/static/js/3.714a1757.chunk.js",
+    "static/js/3.714a1757.chunk.js.map": "/react-triangles/static/js/3.714a1757.chunk.js.map",
+    "index.html": "/react-triangles/index.html",
+    "service-worker.js": "/react-triangles/service-worker.js",
+    "service-worker.js.map": "/react-triangles/service-worker.js.map",
+    "static/css/main.6dea0f05.chunk.css.map": "/react-triangles/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.e5037742.chunk.js.LICENSE.txt": "/react-triangles/static/js/2.e5037742.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.52f92c28.js",
-    "static/js/2.7ee5e3d3.chunk.js",
+    "static/js/runtime-main.93a92799.js",
+    "static/js/2.e5037742.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.b122feee.chunk.js"
+    "static/js/main.ce1e13be.chunk.js"
   ]
 }
