@@ -1,5 +1,9 @@
-import { React, useEffect, useRef } from 'react';
+import { React, useEffect, useRef, useState } from 'react';
 import colorConvertor from 'color-convert';
+
+import eventListen from '@use-it/event-listener';
+import DatGui, { DatColor, DatFolder, DatNumber } from 'react-dat-gui';
+import 'react-dat-gui/dist/index.css';
 
 //global config
 let canvasWidth = window.innerWidth;
@@ -15,32 +19,51 @@ const clamp = (input, min, max) => {
 //triangle component
 const Trouglovi = (props) => {
 
-    //TOP COLOR
-    let topColor = colorConvertor.hex.hsv((props.topcolor) ? props.topcolor : "#7fff69");
-    let topHue = topColor[0];
-    let topSat = topColor[1];
-    let topVal = topColor[2];
-
-    //BOT COLOR
-    let botColor = colorConvertor.hex.hsv((props.botcolor) ? props.botcolor : "#814796");
-    let botHue = botColor[0];
-    let botSat = botColor[1];
-    let botVal = botColor[2];
-
-    //COLOR VARIATION + clamping
-    let varijacijaH = (props.hue) ? clamp(props.hue, 0, 1) : 0.2;
-    let varijacijaS = (props.sat) ? clamp(props.sat, 0, 1) : 0;
-    let varijacijaV = (props.val) ? clamp(props.val, 0, 1) : 0.15;
-
     let triangles = [];
 
-    //equilateral triangle forces the count of triangle count Y
-    let equilateral = (props.equilateral) ? props.equilateral : true;
+    const [update, setUpdate] = useState(false);
 
-    let triangleCountX = (!props.countx || props.countx < 0) ? 10 : props.countx;
-    let triangleCountY = (!props.county || props.county < 0) ? 10 : props.county;
+    const config = useRef({
 
-    let stepX; let stepY;
+        //top + bot colors
+        topcolor: colorConvertor.hex.hsv((props.topcolor) ? props.topcolor : "#7fff69"),
+        botcolor: colorConvertor.hex.hsv((props.botcolor) ? props.botcolor : "#814796"),
+
+        topcolorhex: (props.topcolor) ? props.topcolor : "#7fff69",
+        botcolorhex: (props.botcolor) ? props.botcolor : "#814796",
+
+        //color variation + clamping
+        varH: (props.hue) ? clamp(props.hue, 0, 1) : 0.2,
+        varS: (props.sat) ? clamp(props.sat, 0, 1) : 0,
+        varV: (props.val) ? clamp(props.val, 0, 1) : 0.15,
+
+        //equilateral triangle forces the count of triangle count Y
+        equilateral: (props.equilateral) ? props.equilateral : true,
+
+        triangleCountX: (!props.countx || props.countx < 0) ? 10 : props.countx,
+        triangleCountY: (!props.county || props.county < 0) ? 10 : props.county,
+
+        stepX: null,
+        stepY: null,
+
+    });
+
+    /* === GUI === */
+    const [showGUI, setShowGUI] = useState(false);
+    eventListen('keydown', (event) => {
+        if(!event.repeat && event.code === 'Pause') { setShowGUI(!showGUI); }
+    });
+
+    const handleUpdate = (newData) => {
+
+        newData.topcolor = colorConvertor.hex.hsv(newData.topcolorhex);
+        newData.botcolor = colorConvertor.hex.hsv(newData.botcolorhex);
+
+        config.current = newData;
+        localStorage.setItem('config', JSON.stringify(newData));
+
+        setUpdate(!update);
+    }
 
     //generate color based on triangle position
     const generateColor = (x, y, maxX, maxY) => {
@@ -53,13 +76,13 @@ const Trouglovi = (props) => {
         //const percentDistanceFromFloor = triangleCenterY / canvasHeight;
 
         //hue saturation lightness
-        const hue = valueToPercent(percentDistanceFromFloor + Math.random() * varijacijaH, topHue, botHue);
-        const sat = valueToPercent(percentDistanceFromFloor + Math.random() * varijacijaS, topSat, botSat);
+        const hue = valueToPercent(percentDistanceFromFloor + Math.random() * config.current.varH, config.current.topcolor[0], config.current.botcolor[0]);
+        const sat = valueToPercent(percentDistanceFromFloor + Math.random() * config.current.varS, config.current.topcolor[1], config.current.botcolor[1]);
 
-        var varV = percentDistanceFromFloor + Math.random() * varijacijaV;
+        var varV = percentDistanceFromFloor + Math.random() * config.current.varV;
         if(varV > 1) { varV = 1; }
 
-        const val = valueToPercent(varV, topVal, botVal);
+        const val = valueToPercent(varV, config.current.topcolor[2], config.current.botcolor[2]);
 
         return "#" + colorConvertor.hsv.hex(clamp(hue, 0, 360), clamp(sat, 0, 100), clamp(val, 0, 100));
     };
@@ -70,17 +93,17 @@ const Trouglovi = (props) => {
         //optimizovane promenljive
         var a, b, c, d, offset = 0;
         var red;
-        for(let x = -stepX; x <= canvasWidth; x += stepX) {
+        for(let x = -config.current.stepX; x <= canvasWidth; x += config.current.stepX) {
             red = 1;
-            for(let y = -stepY; y <= canvasHeight; y += stepY) {
+            for(let y = -config.current.stepY; y <= canvasHeight; y += config.current.stepY) {
 
-                if(red % 2 === 1) { offset = stepX / 2; }
+                if(red % 2 === 1) { offset = config.current.stepX / 2; }
                 //if(Math.floor(y / stepY) % 2 == 1) { offset = stepX / 2; }
 
                 a = offset + x;       //offset + x
-                b = a + stepX;        //offset + x + stepX
-                c = a + stepX / 2;    //offset + x + stepX / 2
-                d = y + stepY;        //y + stepY
+                b = a + config.current.stepX;        //offset + x + stepX
+                c = a + config.current.stepX / 2;    //offset + x + stepX / 2
+                d = y + config.current.stepY;        //y + stepY
 
                 //gornji trougao
                 triangles.push({
@@ -93,7 +116,7 @@ const Trouglovi = (props) => {
                 //donji trougao
                 triangles.push({
                     x0: c, y0: d,
-                    x1: c + stepX, y1: d,
+                    x1: c + config.current.stepX, y1: d,
                     x2: b, y2: y,
                     color: generateColor(a, y, canvasWidth, canvasHeight)
                 });
@@ -129,6 +152,8 @@ const Trouglovi = (props) => {
     let canvas;
     let ctx;
 
+    useEffect(() => {init()}, [showGUI, update]);
+
     //startup + resize event
     useEffect(() => {
 
@@ -153,6 +178,17 @@ const Trouglovi = (props) => {
     //initialisation
     const init = () => {
 
+        //startup load config
+        if(localStorage.getItem('config') !== null) {
+            config.current = JSON.parse(localStorage.getItem('config'));
+        } else {
+            localStorage.setItem('config', JSON.stringify(config.current));
+        }
+
+        //get the canvas element
+        canvas = canvasRef.current;
+        ctx = canvas.getContext('2d');
+
         //canvas size
         canvasWidth = window.innerWidth;
         canvasHeight = window.innerHeight;
@@ -160,14 +196,14 @@ const Trouglovi = (props) => {
         ctx.canvas.height = canvasHeight;
 
         //step calculation + equilateral
-        if(equilateral) {
+        if(config.current.equilateral) {
             //equilateral forces Y, vertical triangle count
-            stepY = canvasHeight / triangleCountY;
-            stepX = stepY * 2 * Math.sqrt(3) / 3;
+            config.current.stepY = canvasHeight / config.current.triangleCountY;
+            config.current.stepX = config.current.stepY * 2 * Math.sqrt(3) / 3;
         } else {
             //forces both triangles count (streched triangles)
-            stepX = canvasWidth / triangleCountX;
-            stepY = canvasHeight / triangleCountY;
+            config.current.stepX = canvasWidth / config.current.triangleCountX;
+            config.current.stepY = canvasHeight / config.current.triangleCountY;
         }
 
         triangles = [];
@@ -182,6 +218,25 @@ const Trouglovi = (props) => {
             width: "100%",
             height: "100%"
         }}>
+            <div hidden={!showGUI}>
+                <DatGui data={config.current} onUpdate={handleUpdate} >
+
+                    <DatFolder title='Colors' closed={false}>
+                        <DatColor path='topcolorhex' label='Top Color' />
+                        <DatColor path='botcolorhex' label='Bottom Color' />
+                    </DatFolder>
+
+
+                    <DatFolder title='Variations' closed={false}>
+                        <DatNumber path='varH' label='Hue Variation' min={0} max={1} step={0.01} />
+                        <DatNumber path='varS' label='Saturation Variation' min={0} max={1} step={0.01} />
+                        <DatNumber path='varV' label='Value Variation' min={0} max={1} step={0.01} />
+                    </DatFolder>
+
+                    <DatNumber path='triangleCountY' label='Row Count' min={1} max={64} />
+                </DatGui>
+            </div>
+
             <canvas
                 ref = { canvasRef }
                 style = {{

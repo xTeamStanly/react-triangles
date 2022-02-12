@@ -3,6 +3,11 @@ Simple triangle pattern example.
 
 [DEMO](https://xteamstanly.github.io/react-triangles/).
 
+## Tips
+* Customization ▶ Press the `PAUSE` key to toggle menu (only for desktop).
+* Save Image ▶ Right Click then `Save As`
+* Current settings are saved to `localstorage`
+
 ## Preview
 ![preview](preview.png)
 ## Triangles properties
@@ -16,6 +21,3 @@ Simple triangle pattern example.
 | countx              |   number   | Number of horizontal triangles                           |       10      |
 | county              |   number   | Number of vertical triangles                             |       10      |
 | equilateral         |   boolean  | Should the triangles be equilateral? (*Ignores countx!*) |       10      |
-
-## Todo
-- make a non-intrusive control panel for customisation ([resource](https://github.com/dataarts/dat.gui))
